@@ -17,15 +17,17 @@ typedef struct{//邻接矩阵
     Ver vex[Max];//顶点表
     int arcs[Max][Max];
     int vnum,arcnum;
+    bool edge[Max][Max];
 }AMGragh;
 void menu(){
     cout<<"************欢迎来到商专************"<<endl;
     cout<<"        1、查看所有景点           "<<endl;
     cout<<"        2、景点查询               "<<endl;
     cout<<"        3、问路                   "<<endl;
-    cout<<"        4、修改景点基本信息（用不了       "<<endl;
+    cout<<"        4、修改景点基本信息       "<<endl;
     cout<<"        5、展示简易地图             "<<endl;
-    cout<<"        6、退出                   "<<endl;
+    cout<<"        6、修改景点间路径                   "<<endl;
+    cout<<"        7、退出                   "<<endl;
     cout<<"**********************************"<<endl;
     cout<<"请选择..."<<endl;
 }
@@ -127,10 +129,16 @@ void CreateUDG(AMGragh &G){//建图
     G.arcs[14][16]=G.arcs[16][14]=20;
     G.arcs[16][17]=G.arcs[17][16]=30;
     G.arcs[17][18]=G.arcs[18][17]=150;
+    for (int i = 0; i < G.vnum; i++){
+        for (int j = 0; j < G.vnum; j++){
+            G.edge[i][j] = true;
+        }
+    }
     for(int i=0;i<20;i++)//初始化路径长度
         for(int j=0;j<20;j++){
             if(G.arcs[i][j]==0&&i!=j)
                 G.arcs[i][j]=MX;
+                G.edge[i][j]=false;
         }
     G.arcnum=27;
 }
@@ -244,6 +252,78 @@ void printMap(){
     cout<<"                            校                 区\n";
     cout<<endl;
 }
+bool isEdge(AMGragh G,int i,int j){
+    if(G.arcs[i][j]==MX)
+        return false;
+    else
+        return true;
+}
+void updateArcs(AMGragh &G){
+    int i,j;
+    cout<<"请输入要修改的两个景点的代号：";
+    cin>>i>>j;
+    if(isEdge(G,i-1,j-1)){
+        int temp=G.arcs[i-1][j-1];
+        int k;
+        cout<<"此路径长度为"<<temp<<"米\n"<<endl;
+        cout<<"请输入更改后的数值"<<endl;
+        cin>>k;
+        G.arcs[i-1][j-1]=G.arcs[j-1][i-1]=k;
+        cout<<G.vex[i-1].name<<"到"<<G.vex[j-1].name<<"的路径长度已由"<<temp<<"更改为"<<G.arcs[i-1][j-1]<<"米"<<endl;
+        return;
+    }else{
+        cout<<"此路径不存在！"<<endl;
+        return;
+    }
+}
+void createArcs(AMGragh &G){
+    int i,j;
+    cout<<"请输入要增加的两个景点的代号：";
+    cin>>i>>j;
+    if(isEdge(G,i-1,j-1)){
+        cout<<"此路径已存在！"<<endl;
+        return;
+    }
+    else{
+        int k;
+        cout<<"请输入路径长度：";
+        cin>>k;
+        G.arcs[i-1][j-1]=G.arcs[j-1][i-1]=k;
+        cout<<G.vex[i-1].name<<"到"<<G.vex[j-1].name<<"的路径长度为"<<G.arcs[i-1][j-1]<<"米"<<endl;
+        return;
+    }
+}
+void deleteArcs(AMGragh &G){
+    int i,j;
+    cout<<"请输入要删除的两个景点的代号：";
+    cin>>i>>j;
+    if(isEdge(G,i-1,j-1)){
+        int temp=G.arcs[i-1][j-1];
+        G.arcs[i-1][j-1]=G.arcs[j-1][i-1]=MX;
+        cout<<G.vex[i-1].name<<"到"<<G.vex[j-1].name<<"的路径长度为"<<temp<<"米"<<endl;
+        return;
+    }else{
+        cout<<"此路径不存在！"<<endl;
+        return;
+    }
+}
+void curdArcs(AMGragh &G){//
+    cout<<"************路径修改************"<<endl;
+    cout<<"        1、更新景点间路径长度           "<<endl;
+    cout<<"        2、两景点间增加路径               "<<endl;
+    cout<<"        3、删除两节点间路径            "<<endl;
+    cout<<"**********************************"<<endl;
+    cout<<"请选择..."<<endl;
+    int choice;
+    cin>>choice;
+    switch(choice){
+        case 1:updateArcs(G);break;
+        case 2:createArcs(G);break;
+        case 3://deleteArcs(G);break;
+        default:cout<<"输入错误！"<<endl;
+    }
+}
+
 int main(){
     AMGragh G;
     memset(G.arcs,0,sizeof(G.arcs));
@@ -292,12 +372,15 @@ int main(){
             Ask(G);
             break;
         case 4:
-            //Change(G);
+            Change(G);
             break;
         case 5:
             printMap();
             break;
         case 6:
+            curdArcs(G);
+            break;
+        case 7:
             cout<<"感谢您的使用！"<<endl;
             return 0;
         default:
