@@ -4,7 +4,7 @@
 #include<string.h>
 #include<algorithm>
 using namespace std;
-#define Max 20
+#define Max 50
 #define MX 999999
 int D[Max][Max];
 int path[Max][Max];
@@ -142,7 +142,7 @@ void CreateUDG(AMGragh &G){//建图
         }
     G.arcnum=27;
 }
-void Change(AMGragh &G){//修改信息
+void changeVer(AMGragh &G){//修改信息
     Allprint(G);
     cout<<"请输入要修改信息的代号：";
     char c[5];
@@ -323,7 +323,37 @@ void curdArcs(AMGragh &G){//
         default:cout<<"输入错误！"<<endl;
     }
 }
-
+void addVer(AMGragh &G){
+    cout<<"请输入要增加的景点名称";
+    cin>>G.vex[G.vnum].name;
+    cout<<"请输入景点简介";
+    cin>>G.vex[G.vnum].instruct;
+    //G.vex[G.vnum].num=G.vnum+1;
+    /* std::string str=std::to_string(G.vnum+1);
+    G.vex[G.vnum].num=str.c_str(); */
+    itoa(G.vnum+1,G.vex[G.vnum].num,10);
+    cout<<G.vex[G.vnum].num<<"编号景点"<<G.vex[G.vnum].name<<endl;
+    G.vnum++;
+    cout<<"增加成功！"<<endl;
+}
+void mean4(AMGragh &G){
+    cout<<"************景点增加************"<<endl;
+    cout<<"        1、增加景点           "<<endl;
+    cout<<"        2、修改景点信息               "<<endl;
+    cout<<"**********************************"<<endl;
+    cout<<"请选择..."<<endl;
+    int choice;
+    cin>>choice;
+    switch(choice){
+        case 1:
+            addVer(G);
+            break;
+        case 2:
+            changeVer(G);
+            break;    
+        default:cout<<"输入错误！"<<endl;
+    }
+}
 int main(){
     AMGragh G;
     memset(G.arcs,0,sizeof(G.arcs));
@@ -358,7 +388,7 @@ int main(){
         printf("\n");
     } */
     int m;
-    while(m!=5){
+    while(m!=7){
         menu();
         cin>>m;
         switch(m){
@@ -372,7 +402,7 @@ int main(){
             Ask(G);
             break;
         case 4:
-            Change(G);
+            mean4(G);
             break;
         case 5:
             printMap();
