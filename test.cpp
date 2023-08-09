@@ -221,15 +221,48 @@ void Path(AMGragh G,int a,int b){//获得具体路径
     --i;
    }
 }
-void Ask(AMGragh G){//问路
+void askDirect(AMGragh G){//问路
     Allprint(G);
-    cout<<"请输入起点和目的地(1~20，即第几个景点,中间用空格隔开):";
+    cout<<"请输入起点和目的地(1~"<<G.vnum<<"，即第几个景点,中间用空格隔开):";
     int a,b;
     cin>>a>>b;
     Floyd(G);
     cout<<endl<<endl<<"从"<<G.vex[a-1].name<<"到"<<G.vex[b-1].name<<":"<<endl<<endl<<"最短路径长度："<<D[a-1][b-1]<<"米"<<endl;
     Path(G,a-1,b-1);
     cout<<endl;
+}
+void askTransit(AMGragh G){
+    cout<<"请输入起点和目的地(1~"<<G.vnum<<"，即第几个景点,中间用空格隔开):";
+    int a,b,c;
+    cin>>a>>b;
+    cout<<"请输入途径景点编号";
+    cin>>c;
+    Floyd(G);
+    cout<<"从"<<G.vex[a-1].name<<"途径"<<G.vex[c-1].name<<"到"<<G.vex[b-1].name<<":"<<endl<<"最短路径长度："<<D[a-1][c-1]+D[c-1][b-1]<<"米"<<endl;
+    Path(G,a-1,c-1);
+    cout<<endl;
+    Path(G,c-1,b-1);
+    cout<<endl;
+}
+void ask(AMGragh G){
+    cout<<"************问路************"<<endl;
+    cout<<"        1、两景点间直达路线           "<<endl;
+    cout<<"        2、两景点间经过指定景点               "<<endl;
+    cout<<"**********************************"<<endl;
+    cout<<"请选择..."<<endl;
+    int choice;
+    cin>>choice;
+    switch (choice){
+    case 1:
+        askDirect(G);
+        break;
+    case 2:
+        askTransit(G);
+        break;    
+    default:
+        cout<<"输入错误！"<<endl;
+        break;
+    }
 }
 void printMap(){
     cout<<"             _______________萃雅1、2 ----------       \n";
@@ -290,6 +323,7 @@ void createArcs(AMGragh &G){
         cin>>k;
         G.arcs[i-1][j-1]=G.arcs[j-1][i-1]=k;
         cout<<G.vex[i-1].name<<"到"<<G.vex[j-1].name<<"的路径长度为"<<G.arcs[i-1][j-1]<<"米"<<endl;
+        G.edge[i-1][j-1]=G.edge[j-1][i-1]=true;
         return;
     }
 }
@@ -399,7 +433,7 @@ int main(){
             Query(G);
             break;
         case 3:
-            Ask(G);
+            ask(G);
             break;
         case 4:
             mean4(G);
@@ -421,4 +455,3 @@ int main(){
     }
     return 0;
 }
-//gitTest
