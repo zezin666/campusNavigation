@@ -19,6 +19,7 @@ typedef struct{//邻接矩阵
     int vnum,arcnum;
     bool edge[Max][Max];
 }AMGragh;
+
 void menu(){
     cout<<"************欢迎来到商专************"<<endl;
     cout<<"        1、查看所有景点           "<<endl;
@@ -31,15 +32,17 @@ void menu(){
     cout<<"**********************************"<<endl;
     cout<<"请选择..."<<endl;
 }
+
 void Allprint(AMGragh G){//输出所有景点信息
     cout<<"---------------校园景点总览---------------"<<endl;
     cout<<"景点名称   "<<"  "<<"代号"<<"     "<<"    简介"<<endl;
-    for(int i=0;i<G.vnum;i++){
-        //cout<<std::left<<setw(15)<<G.vex[i].name<<" "<<std::left<<setw(5)<<G.vex[i].num<<" "<<std::left<<setw(50)<<G.vex[i].instruct<<endl;
-        printf("%-20s%-10s%-50s\n",G.vex[i].name,G.vex[i].num,G.vex[i].instruct);
+    for(int i=0;i<G.vnum;i++){//总是输出不整齐
+        cout<<std::left<<setw(15)<<G.vex[i].name<<" "<<std::left<<setw(5)<<G.vex[i].num<<" "<<std::left<<setw(50)<<G.vex[i].instruct<<endl;
+        //printf("%-20s%-10s%-50s\n",G.vex[i].name,G.vex[i].num,G.vex[i].instruct);
     }
     cout<<endl;
 }
+
 void CreateUDG(AMGragh &G){//建图
     G.vnum=20;
     strcpy(G.vex[0].num,"01");
@@ -117,7 +120,7 @@ void CreateUDG(AMGragh &G){//建图
     G.arcs[7][8]=G.arcs[8][7]=20;
     G.arcs[7][11]=G.arcs[11][7]=200;
     G.arcs[8][9]=G.arcs[9][8]=20;
-    G.arcs[8][19]=G.arcs[19][8]=150;
+    G.arcs[8][19]=G.arcs[19][8]=139;
     G.arcs[9][11]=G.arcs[11][9]=250;
     G.arcs[9][10]=G.arcs[10][9]=100;
     G.arcs[9][12]=G.arcs[12][9]=30;
@@ -136,20 +139,21 @@ void CreateUDG(AMGragh &G){//建图
     }
     for(int i=0;i<20;i++)//初始化路径长度
         for(int j=0;j<20;j++){
-            if(G.arcs[i][j]==0&&i!=j)
+            if(G.arcs[i][j]==0&&i!=j){
                 G.arcs[i][j]=MX;
                 G.edge[i][j]=false;
+            }
         }
     G.arcnum=27;
 }
+
 void changeVer(AMGragh &G){//修改信息
     Allprint(G);
     cout<<"请输入要修改信息的代号：";
     char c[5];
     cin>>c;
     for(int i=0;i<G.vnum;i++){
-        if(strcmp(c,G.vex[i].num)==0)//字符串比较的方法进行查找
-        {
+        if(strcmp(c,G.vex[i].num)==0){//字符串比较的方法进行查找
             memset(G.vex[i].name,0,sizeof(G.vex[i].name));
             memset(G.vex[i].num,0,sizeof(G.vex[i].num));
             memset(G.vex[i].instruct,0,sizeof(G.vex[i].instruct));
@@ -171,40 +175,50 @@ void changeVer(AMGragh &G){//修改信息
         }
     }
 }
+
 void Query(AMGragh G){//查询景点
     cout<<"请输入查询景点的代号：";
     char c[5];
     cin>>c;
     int i;
-    for(i=0;i<G.vnum;i++)
-        if(strcmp(c,G.vex[i].num)==0)
-        {
+    for(i=0;i<G.vnum;i++){
+        if(strcmp(c,G.vex[i].num)==0){
             cout<<"景点名称："<<G.vex[i].name<<"   ";
             cout<<"代号："<<G.vex[i].num<<"   ";
             cout<<"简介："<<G.vex[i].instruct<<endl;
             break;
         }
-    if(i==G.vnum)
+    }
+    if(i==G.vnum){
         cout<<"该代号不存在!"<<endl;
+    }
 }
+
 void Floyd(AMGragh G){//弗洛伊德算法，获得最短路径
     int i,j,k;
-    for(i=0;i<G.vnum;i++)
+    for(i=0;i<G.vnum;i++){
         for(j=0;j<G.vnum;j++){
             D[i][j]=G.arcs[i][j];
-            if(D[i][j]<MX&&i!=j)
+            if(D[i][j]<MX&&i!=j){
                 path[i][j]=i;
-            else
+            }
+            else{
                 path[i][j]=-1;
+            }
         }
-    for(k=0;k<G.vnum;k++)
-        for(i=0;i<G.vnum;i++)
-            for(j=0;j<G.vnum;j++)
+    }
+    for(k=0;k<G.vnum;k++){
+        for(i=0;i<G.vnum;i++){
+            for(j=0;j<G.vnum;j++){
                 if(D[i][k]+D[k][j]<D[i][j]){
                     D[i][j]=D[i][k]+D[k][j];
                     path[i][j]=path[k][j];
                 }
+            }
+        }
+    }
 }
+
 void Path(AMGragh G,int a,int b){//获得具体路径
    int p[Max];
    p[0]=b;
@@ -221,6 +235,7 @@ void Path(AMGragh G,int a,int b){//获得具体路径
     --i;
    }
 }
+
 void askDirect(AMGragh G){//问路
     Allprint(G);
     cout<<"请输入起点和目的地(1~"<<G.vnum<<"，即第几个景点,中间用空格隔开):";
@@ -231,7 +246,8 @@ void askDirect(AMGragh G){//问路
     Path(G,a-1,b-1);
     cout<<endl;
 }
-void askTransit(AMGragh G){
+
+void askTransit(AMGragh G){//简单粗暴地拆分问题，复用Floyd算法
     cout<<"请输入起点和目的地(1~"<<G.vnum<<"，即第几个景点,中间用空格隔开):";
     int a,b,c;
     cin>>a>>b;
@@ -244,6 +260,7 @@ void askTransit(AMGragh G){
     Path(G,c-1,b-1);
     cout<<endl;
 }
+
 void ask(AMGragh G){
     cout<<"************问路************"<<endl;
     cout<<"        1、两景点间直达路线           "<<endl;
@@ -264,6 +281,7 @@ void ask(AMGragh G){
         break;
     }
 }
+
 void printMap(){
     cout<<"             _______________萃雅1、2 ----------       \n";
     cout<<"             |                 \\         田\n";
@@ -285,12 +303,14 @@ void printMap(){
     cout<<"                            校                 区\n";
     cout<<endl;
 }
+
 bool isEdge(AMGragh G,int i,int j){
     if(G.arcs[i][j]==MX)
         return false;
     else
         return true;
 }
+
 void updateArcs(AMGragh &G){
     int i,j;
     cout<<"请输入要修改的两个景点的代号：";
@@ -309,6 +329,7 @@ void updateArcs(AMGragh &G){
         return;
     }
 }
+
 void createArcs(AMGragh &G){
     int i,j;
     cout<<"请输入要增加的两个景点的代号：";
@@ -327,6 +348,7 @@ void createArcs(AMGragh &G){
         return;
     }
 }
+
 void deleteArcs(AMGragh &G){
     int i,j;
     cout<<"请输入要删除的两个景点的代号：";
@@ -341,6 +363,7 @@ void deleteArcs(AMGragh &G){
         return;
     }
 }
+
 void curdArcs(AMGragh &G){//
     cout<<"************路径修改************"<<endl;
     cout<<"        1、更新景点间路径长度           "<<endl;
@@ -357,6 +380,7 @@ void curdArcs(AMGragh &G){//
         default:cout<<"输入错误！"<<endl;
     }
 }
+
 void addVer(AMGragh &G){
     cout<<"请输入要增加的景点名称";
     cin>>G.vex[G.vnum].name;
@@ -367,10 +391,17 @@ void addVer(AMGragh &G){
     G.vex[G.vnum].num=str.c_str(); */
     itoa(G.vnum+1,G.vex[G.vnum].num,10);
     cout<<G.vex[G.vnum].num<<"编号景点"<<G.vex[G.vnum].name<<endl;
+    for(int i=0;i<G.vnum;i++){//初始化路径长度
+        G.arcs[i][G.vnum]=MX;
+        G.arcs[G.vnum][i]=MX;
+        G.edge[i][G.vnum]=false;
+        G.edge[G.vnum][i]=false;
+    }
     G.vnum++;
     cout<<"增加成功！"<<endl;
 }
-void mean4(AMGragh &G){
+
+void updateVer(AMGragh &G){
     cout<<"************景点增加************"<<endl;
     cout<<"        1、增加景点           "<<endl;
     cout<<"        2、修改景点信息               "<<endl;
@@ -388,12 +419,13 @@ void mean4(AMGragh &G){
         default:cout<<"输入错误！"<<endl;
     }
 }
+
 int main(){
     AMGragh G;
     memset(G.arcs,0,sizeof(G.arcs));
     CreateUDG(G);
     //cout<<G.arcs[0][11]<<endl;
-    /* Floyd(G);
+    /* Floyd(G);//测试使用 输出Floyd算法二维数组
     Path(G,3,10);
     cout<<path[3][10]<<endl;
     printf("   ");
@@ -436,7 +468,7 @@ int main(){
             ask(G);
             break;
         case 4:
-            mean4(G);
+            updateVer(G);
             break;
         case 5:
             printMap();
@@ -453,5 +485,6 @@ int main(){
         system("pause");
         system("cls");
     }
+    //DFS(G,5);
     return 0;
 }
