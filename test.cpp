@@ -6,6 +6,7 @@
 using namespace std;
 #define Max 50
 #define MX 999999
+//bool visited[Max];
 int D[Max][Max];
 int path[Max][Max];
 typedef struct Ver{//顶点信息
@@ -28,7 +29,8 @@ void menu(){
     cout<<"        4、修改景点基本信息       "<<endl;
     cout<<"        5、展示简易地图             "<<endl;
     cout<<"        6、修改景点间路径                   "<<endl;
-    cout<<"        7、退出                   "<<endl;
+    cout<<"        7、查询关节点                   "<<endl;
+    cout<<"        8、退出                   "<<endl;
     cout<<"**********************************"<<endl;
     cout<<"请选择..."<<endl;
 }
@@ -137,8 +139,8 @@ void CreateUDG(AMGragh &G){//建图
             G.edge[i][j] = true;
         }
     }
-    for(int i=0;i<20;i++)//初始化路径长度
-        for(int j=0;j<20;j++){
+    for(int i=0;i<G.vnum;i++)//初始化路径长度
+        for(int j=0;j<G.vnum;j++){
             if(G.arcs[i][j]==0&&i!=j){
                 G.arcs[i][j]=MX;
                 G.edge[i][j]=false;
@@ -420,6 +422,60 @@ void updateVer(AMGragh &G){
     }
 }
 
+void DFS(AMGragh G, int v, bool visited[], int &time, int dfn[], int low[], int parent[], bool isCut[]){
+    visited[v] = true; // 标记v已访问
+    time++; // 访问时间加一
+    dfn[v] = low[v] = time; // 初始化v的访问顺序和最早能到达的顶点为time
+    int children = 0; // 记录v的子树个数
+    for(int w = 0; w < G.vnum; w++){ 
+        if(G.edge[v][w]){ // 如果v和w有边相连
+            if(!visited[w]){ // 如果w没有被访问过
+                children++; // 子树个数加一
+                parent[w] = v; // 记录w的父节点为v
+                DFS(G, w, visited, time, dfn, low, parent, isCut); // 递归访问w
+                low[v] = min(low[v], low[w]); // 更新v能到达的最早顶点
+                if(parent[v] == -1 && children > 1){ // 如果v是根节点且有多于一个子树，那么v是割点
+                    isCut[v] = true;
+                }
+                if(parent[v] != -1 && low[w] >= dfn[v]){ // 如果v不是根节点且w不能到达比v更早的顶点，那么v是割点
+                    isCut[v] = true;
+                }
+            }
+            else if(w != parent[v]){ // 如果w已经被访问过且不是v的父节点，那么说明存在回边
+                low[v] = min(low[v], dfn[w]); // 更新v能到达的最早顶点
+            }
+        }
+    }
+}
+
+bool isArticul(AMGragh G, int v){
+    bool visited[Max]; 
+    int time = 0; // 记录访问时间
+    int dfn[Max]; // 记录每个顶点的访问顺序
+    int low[Max]; // 记录每个顶点能到达的最早顶点
+    int parent[Max]; // 记录每个顶点的父节点
+    bool isCut[Max]; // 记录每个顶点是否是割点
+    for(int i = 0; i < G.vnum; i++){
+        visited[i] = false; // 初始化所有顶点为未访问
+        parent[i] = -1; // 初始化所有顶点的父节点为-1
+        isCut[i] = false; // 初始化所有顶点不是割点
+    }
+    DFS(G, v, visited, time, dfn, low, parent, isCut); // 从v开始深度优先搜索
+    return isCut[v]; // 返回v是否是割点
+}
+
+//求AMGragh的关节点，并打印出来
+void findArticul(AMGragh G){
+    cout<<"关节点有：\n";
+    for(int v = 0; v < G.vnum; v++){ //遍历所有顶点，判断是否是关节点
+    //cout<<isArticul(G, v)<<endl;
+        if(isArticul(G, v)){ //如果是关节点，打印出来
+            cout<<v<<" ";
+        }
+    }
+   cout<<"\n";
+}
+
 int main(){
     AMGragh G;
     memset(G.arcs,0,sizeof(G.arcs));
@@ -454,7 +510,7 @@ int main(){
         printf("\n");
     } */
     int m;
-    while(m!=7){
+    while(m!=8){
         menu();
         cin>>m;
         switch(m){
@@ -477,6 +533,9 @@ int main(){
             curdArcs(G);
             break;
         case 7:
+            findArticul(G);
+            break;
+        case 8:
             cout<<"感谢您的使用！"<<endl;
             return 0;
         default:
@@ -485,6 +544,6 @@ int main(){
         system("pause");
         system("cls");
     }
-    //DFS(G,5);
+    //findArticul(G);//测试求关节点
     return 0;
 }
