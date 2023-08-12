@@ -35,7 +35,7 @@ void menu(){
     cout<<"请选择..."<<endl;
 }
 
-void Allprint(AMGragh G){//输出所有景点信息
+void allPrint(AMGragh G){//输出所有景点信息
     cout<<"---------------校园景点总览---------------"<<endl;
     cout<<"景点名称   "<<"  "<<"代号"<<"     "<<"    简介"<<endl;
     for(int i=0;i<G.vnum;i++){//总是输出不整齐
@@ -45,7 +45,7 @@ void Allprint(AMGragh G){//输出所有景点信息
     cout<<endl;
 }
 
-void CreateUDG(AMGragh &G){//建图
+void createUDG(AMGragh &G){//建图
     G.vnum=20;
     strcpy(G.vex[0].num,"01");
     strcpy(G.vex[1].num,"02");
@@ -149,36 +149,7 @@ void CreateUDG(AMGragh &G){//建图
     G.arcnum=27;
 }
 
-void changeVer(AMGragh &G){//修改信息
-    Allprint(G);
-    cout<<"请输入要修改信息的代号：";
-    char c[5];
-    cin>>c;
-    for(int i=0;i<G.vnum;i++){
-        if(strcmp(c,G.vex[i].num)==0){//字符串比较的方法进行查找
-            memset(G.vex[i].name,0,sizeof(G.vex[i].name));
-            memset(G.vex[i].num,0,sizeof(G.vex[i].num));
-            memset(G.vex[i].instruct,0,sizeof(G.vex[i].instruct));
-            char num1[5];
-            char name1[51];
-            char instruct1[101];
-            cout<<"请输入修改后的景点信息："<<endl;
-            cout<<"景点名称：";
-            scanf("%s",name1);
-            cout<<"代号：";
-            scanf("%s",num1);
-            cout<<"简介：";
-            scanf("%s",instruct1);
-            strcpy(G.vex[i].name,name1);
-            strcpy(G.vex[i].num,num1);
-            strcpy(G.vex[i].instruct,instruct1);
-            cout<<"修改成功！"<<endl;
-            break;
-        }
-    }
-}
-
-void Query(AMGragh G){//查询景点
+void query(AMGragh G){//查询景点
     cout<<"请输入查询景点的代号：";
     char c[5];
     cin>>c;
@@ -239,7 +210,7 @@ void Path(AMGragh G,int a,int b){//获得具体路径
 }
 
 void askDirect(AMGragh G){//问路
-    Allprint(G);
+    allPrint(G);
     cout<<"请输入起点和目的地(1~"<<G.vnum<<"，即第几个景点,中间用空格隔开):";
     int a,b;
     cin>>a>>b;
@@ -263,7 +234,7 @@ void askTransit(AMGragh G){//简单粗暴地拆分问题，复用Floyd算法
     cout<<endl;
 }
 
-void ask(AMGragh G){
+void ask(AMGragh G){//问路菜单
     cout<<"************问路************"<<endl;
     cout<<"        1、两景点间直达路线           "<<endl;
     cout<<"        2、两景点间经过指定景点               "<<endl;
@@ -284,7 +255,7 @@ void ask(AMGragh G){
     }
 }
 
-void printMap(){
+void printMap(){//打印仿真导游图
     cout<<"             _______________萃雅1、2 ----------       \n";
     cout<<"             |                 \\         田\n";
     cout<<"             |                   \\       径\n";
@@ -306,14 +277,14 @@ void printMap(){
     cout<<endl;
 }
 
-bool isEdge(AMGragh G,int i,int j){
+bool isEdge(AMGragh G,int i,int j){//判断是否存在边
     if(G.arcs[i][j]==MX)
         return false;
     else
         return true;
 }
 
-void updateArcs(AMGragh &G){
+void updateArcs(AMGragh &G){//修改两景点间路径长度
     int i,j;
     cout<<"请输入要修改的两个景点的代号：";
     cin>>i>>j;
@@ -332,7 +303,7 @@ void updateArcs(AMGragh &G){
     }
 }
 
-void createArcs(AMGragh &G){
+void createArcs(AMGragh &G){//两景点间新增路径
     int i,j;
     cout<<"请输入要增加的两个景点的代号：";
     cin>>i>>j;
@@ -351,7 +322,7 @@ void createArcs(AMGragh &G){
     }
 }
 
-void deleteArcs(AMGragh &G){
+void deleteArcs(AMGragh &G){//删除两景点路径
     int i,j;
     cout<<"请输入要删除的两个景点的代号：";
     cin>>i>>j;
@@ -366,7 +337,7 @@ void deleteArcs(AMGragh &G){
     }
 }
 
-void curdArcs(AMGragh &G){//
+void curdArcs(AMGragh &G){//路径修改菜单
     cout<<"************路径修改************"<<endl;
     cout<<"        1、更新景点间路径长度           "<<endl;
     cout<<"        2、两景点间增加路径               "<<endl;
@@ -383,7 +354,7 @@ void curdArcs(AMGragh &G){//
     }
 }
 
-void addVer(AMGragh &G){
+void addVer(AMGragh &G){//增加景点
     cout<<"请输入要增加的景点名称";
     cin>>G.vex[G.vnum].name;
     cout<<"请输入景点简介";
@@ -403,8 +374,37 @@ void addVer(AMGragh &G){
     cout<<"增加成功！"<<endl;
 }
 
-void updateVer(AMGragh &G){
-    cout<<"************景点增加************"<<endl;
+void changeVer(AMGragh &G){//修改信息
+    allPrint(G);
+    cout<<"请输入要修改信息的代号：";
+    char c[5];
+    cin>>c;
+    for(int i=0;i<G.vnum;i++){
+        if(strcmp(c,G.vex[i].num)==0){//字符串比较的方法进行查找
+            memset(G.vex[i].name,0,sizeof(G.vex[i].name));
+            memset(G.vex[i].num,0,sizeof(G.vex[i].num));
+            memset(G.vex[i].instruct,0,sizeof(G.vex[i].instruct));
+            char num1[5];
+            char name1[51];
+            char instruct1[101];
+            cout<<"请输入修改后的景点信息："<<endl;
+            cout<<"景点名称：";
+            scanf("%s",name1);
+            cout<<"代号：";
+            scanf("%s",num1);
+            cout<<"简介：";
+            scanf("%s",instruct1);
+            strcpy(G.vex[i].name,name1);
+            strcpy(G.vex[i].num,num1);
+            strcpy(G.vex[i].instruct,instruct1);
+            cout<<"修改成功！"<<endl;
+            break;
+        }
+    }
+}
+
+void updateVer(AMGragh &G){//景点修改菜单
+    cout<<"************景点修改************"<<endl;
     cout<<"        1、增加景点           "<<endl;
     cout<<"        2、修改景点信息               "<<endl;
     cout<<"**********************************"<<endl;
@@ -423,53 +423,52 @@ void updateVer(AMGragh &G){
 }
 
 void DFS(AMGragh G, int v, bool visited[], int &time, int dfn[], int low[], int parent[], bool isCut[]){
-    visited[v] = true; // 标记v已访问
-    time++; // 访问时间加一
-    dfn[v] = low[v] = time; // 初始化v的访问顺序和最早能到达的顶点为time
-    int children = 0; // 记录v的子树个数
+    visited[v] = true; 
+    time++; 
+    dfn[v] = low[v] = time;
+    int children = 0;
     for(int w = 0; w < G.vnum; w++){ 
-        if(G.edge[v][w]){ // 如果v和w有边相连
-            if(!visited[w]){ // 如果w没有被访问过
-                children++; // 子树个数加一
-                parent[w] = v; // 记录w的父节点为v
-                DFS(G, w, visited, time, dfn, low, parent, isCut); // 递归访问w
-                low[v] = min(low[v], low[w]); // 更新v能到达的最早顶点
-                if(parent[v] == -1 && children > 1){ // 如果v是根节点且有多于一个子树，那么v是割点
+        if(G.edge[v][w]){
+            if(!visited[w]){
+                children++;
+                parent[w] = v;
+                DFS(G, w, visited, time, dfn, low, parent, isCut);
+                low[v] = min(low[v], low[w]);
+                if(parent[v] == -1 && children > 1){
                     isCut[v] = true;
                 }
-                if(parent[v] != -1 && low[w] >= dfn[v]){ // 如果v不是根节点且w不能到达比v更早的顶点，那么v是割点
+                if(parent[v] != -1 && low[w] >= dfn[v]){
                     isCut[v] = true;
                 }
             }
-            else if(w != parent[v]){ // 如果w已经被访问过且不是v的父节点，那么说明存在回边
-                low[v] = min(low[v], dfn[w]); // 更新v能到达的最早顶点
+            else if(w != parent[v]){
+                low[v] = min(low[v], dfn[w]);
             }
         }
     }
 }
 
-bool isArticul(AMGragh G, int v){
+bool isArticul(AMGragh G, int v){//判断是否是割点
     bool visited[Max]; 
-    int time = 0; // 记录访问时间
-    int dfn[Max]; // 记录每个顶点的访问顺序
-    int low[Max]; // 记录每个顶点能到达的最早顶点
-    int parent[Max]; // 记录每个顶点的父节点
-    bool isCut[Max]; // 记录每个顶点是否是割点
+    int time = 0;
+    int dfn[Max];
+    int low[Max];
+    int parent[Max];
+    bool isCut[Max];
     for(int i = 0; i < G.vnum; i++){
-        visited[i] = false; // 初始化所有顶点为未访问
-        parent[i] = -1; // 初始化所有顶点的父节点为-1
-        isCut[i] = false; // 初始化所有顶点不是割点
+        visited[i] = false;
+        parent[i] = -1;
+        isCut[i] = false;
     }
-    DFS(G, v, visited, time, dfn, low, parent, isCut); // 从v开始深度优先搜索
-    return isCut[v]; // 返回v是否是割点
+    DFS(G, v, visited, time, dfn, low, parent, isCut);
+    return isCut[v];
 }
 
-//求AMGragh的关节点，并打印出来
-void findArticul(AMGragh G){
+void findArticul(AMGragh G){//求G的关节点，并打印出来
     cout<<"关节点有：\n";
-    for(int v = 0; v < G.vnum; v++){ //遍历所有顶点，判断是否是关节点
+    for(int v = 0; v < G.vnum; v++){
     //cout<<isArticul(G, v)<<endl;
-        if(isArticul(G, v)){ //如果是关节点，打印出来
+        if(isArticul(G, v)){
             cout<<v<<" ";
         }
     }
@@ -479,7 +478,7 @@ void findArticul(AMGragh G){
 int main(){
     AMGragh G;
     memset(G.arcs,0,sizeof(G.arcs));
-    CreateUDG(G);
+    createUDG(G);
     //cout<<G.arcs[0][11]<<endl;
     /* Floyd(G);//测试使用 输出Floyd算法二维数组
     Path(G,3,10);
@@ -515,10 +514,10 @@ int main(){
         cin>>m;
         switch(m){
         case 1:
-            Allprint(G);
+            allPrint(G);
             break;
         case 2:
-            Query(G);
+            query(G);
             break;
         case 3:
             ask(G);
