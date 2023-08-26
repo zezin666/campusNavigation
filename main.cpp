@@ -220,7 +220,7 @@ void askDirect(AMGragh G){//问路
     cout<<endl;
 }
 
-void askTransit(AMGragh G){//简单粗暴地拆分问题，复用Floyd算法
+void askTransit(AMGragh G){
     cout<<"请输入起点和目的地(1~"<<G.vnum<<"，即第几个景点,中间用空格隔开):";
     int a,b,c;
     cin>>a>>b;
@@ -232,7 +232,7 @@ void askTransit(AMGragh G){//简单粗暴地拆分问题，复用Floyd算法
     cout<<endl;
     Path(G,c-1,b-1);
     cout<<endl;
-}
+}//
 
 void ask(AMGragh G){//问路菜单
     cout<<"************问路************"<<endl;
