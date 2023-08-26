@@ -232,7 +232,7 @@ void askTransit(AMGragh G){
     cout<<endl;
     Path(G,c-1,b-1);
     cout<<endl;
-}//
+}
 
 void ask(AMGragh G){//问路菜单
     cout<<"************问路************"<<endl;
