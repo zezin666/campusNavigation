@@ -327,9 +327,9 @@ void deleteArcs(AMGragh &G){//删除两景点路径
     cout<<"请输入要删除的两个景点的代号：";
     cin>>i>>j;
     if(isEdge(G,i-1,j-1)){
-        int temp=G.arcs[i-1][j-1];
         G.arcs[i-1][j-1]=G.arcs[j-1][i-1]=MX;
-        cout<<G.vex[i-1].name<<"到"<<G.vex[j-1].name<<"的路径长度为"<<temp<<"米"<<endl;
+        G.edge[i-1][j-1]=G.edge[j-1][i-1]=false;
+        cout<<"删除成功"<<endl;
         return;
     }else{
         cout<<"此路径不存在！"<<endl;
@@ -349,7 +349,7 @@ void curdArcs(AMGragh &G){//路径修改菜单
     switch(choice){
         case 1:updateArcs(G);break;
         case 2:createArcs(G);break;
-        case 3://deleteArcs(G);break;
+        case 3:deleteArcs(G);break;
         default:cout<<"输入错误！"<<endl;
     }
 }
@@ -536,6 +536,8 @@ int main(){
             break;
         case 8:
             cout<<"感谢您的使用！"<<endl;
+            cout<<"湖南工商大学校园导航-Version 1.3"<<endl;
+            cout<<"Developed by Zezin"<<endl;
             return 0;
         default:
             cout<<"没有该选项！"<<endl;
